@@ -23,6 +23,10 @@ namespace BioGenom.API
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
                 await SeedData.EnsureSeedDataAsync(context);
             }
 

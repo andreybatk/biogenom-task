@@ -7,7 +7,7 @@ namespace BioGenom.API.Mappers
     {
         public static ReportResponse ToResponse(Report report)
         {
-            return new ReportResponse
+            var reportResponse = new ReportResponse
             {
                 Id = report.Id,
                 CreatedAt = report.CreatedAt,
@@ -29,13 +29,48 @@ namespace BioGenom.API.Mappers
                     ValueFromFood = ndi.ValueFromFood
                 }).ToList()
             };
+
+            if(report.PersonalizedSet != null)
+            {
+                reportResponse.PersonalizedSet = new PersonalizedSetResponse
+                {
+                    Id = report.PersonalizedSet.Id,
+                    Items = report.PersonalizedSet.Items.Select(i => new PersonalizedItemResponse
+                    {
+                        Id = i.Id,
+                        Name = i.Name,
+                        Description = i.Description,
+                        ImageUrl = i.ImageUrl,
+                        AlternativesCount = i.AlternativesCount
+                    }).ToList()
+                };
+            }
+
+            return reportResponse;
         }
 
         public static Report ToEntity(ReportRequest request)
         {
+            PersonalizedSet? personalizedSet = null;
+
+            if (request.PersonalizedSet != null)
+            {
+                personalizedSet = new PersonalizedSet
+                {
+                    Items = request.PersonalizedSet.Items.Select(i => new PersonalizedItem
+                    {
+                        Name = i.Name,
+                        Description = i.Description,
+                        ImageUrl = i.ImageUrl,
+                        AlternativesCount = i.AlternativesCount
+                    }).ToList()
+                };
+            }
+
             return new Report
             {
                 CreatedAt = DateTime.UtcNow,
+                PersonalizedSet = personalizedSet,
                 DailyIntakes = request.DailyIntakes.Select(d => new DailyIntake
                 {
                     Name = d.Name,
@@ -54,5 +89,4 @@ namespace BioGenom.API.Mappers
             };
         }
     }
-
 }

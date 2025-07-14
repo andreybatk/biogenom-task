@@ -10,10 +10,31 @@ namespace BioGenom.DB
             if (await context.Reports.AnyAsync())
                 return;
 
+            var personalizedSet = new PersonalizedSet
+            {
+                Items = new List<PersonalizedItem>
+            {
+                new PersonalizedItem
+                {
+                    Name = "Item 1",
+                    Description = "Description for item 1",
+                    ImageUrl = "https://example.com/image1.png",
+                    AlternativesCount = 2
+                },
+                new PersonalizedItem
+                {
+                    Name = "Item 2",
+                    Description = "Description for item 2",
+                    ImageUrl = "https://example.com/image2.png",
+                    AlternativesCount = 1
+                }
+            }
+            };
+
             var report = new Report
             {
-                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow,
+                PersonalizedSet = personalizedSet,
                 DailyIntakes = new List<DailyIntake>
             {
                 new DailyIntake
@@ -42,7 +63,7 @@ namespace BioGenom.DB
                     Source = "Пища + набор",
                     Value = 90.0f,
                     ValueFromSet = 50.0f,
-                    ValueFromFood = 40.0f,
+                    ValueFromFood = 40.0f
                 },
                 new NewDailyIntake
                 {
@@ -51,7 +72,7 @@ namespace BioGenom.DB
                     Source = "Пища + набор",
                     Value = 16.0f,
                     ValueFromSet = 4.0f,
-                    ValueFromFood = 12.0f,
+                    ValueFromFood = 12.0f
                 }
             }
             };

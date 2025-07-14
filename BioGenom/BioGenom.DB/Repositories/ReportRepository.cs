@@ -20,6 +20,8 @@ namespace BioGenom.DB.Repositories
             return await _context.Reports
                 .Include(r => r.DailyIntakes)
                 .Include(r => r.NewDailyIntakes)
+                .Include(r => r.PersonalizedSet)
+                    .ThenInclude(s => s.Items)
                 .FirstOrDefaultAsync();
         }
 
@@ -29,7 +31,10 @@ namespace BioGenom.DB.Repositories
         public async Task SaveReportAsync(Report newReport)
         {
             var oldReports = await _context.Reports.ToListAsync();
-            _context.Reports.RemoveRange(oldReports);
+            if (oldReports.Any())
+            {
+                _context.Reports.RemoveRange(oldReports);
+            }
 
             newReport.CreatedAt = DateTime.UtcNow;
             _context.Reports.Add(newReport);
