@@ -22,6 +22,7 @@ namespace BioGenom.DB.Repositories
                 .Include(r => r.NewDailyIntakes)
                 .Include(r => r.PersonalizedSet)
                     .ThenInclude(s => s.Items)
+                        .ThenInclude(i => i.Product)
                 .FirstOrDefaultAsync();
         }
 

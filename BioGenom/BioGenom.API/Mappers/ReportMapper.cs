@@ -30,7 +30,7 @@ namespace BioGenom.API.Mappers
                 }).ToList()
             };
 
-            if(report.PersonalizedSet != null)
+            if (report.PersonalizedSet != null)
             {
                 reportResponse.PersonalizedSet = new PersonalizedSetResponse
                 {
@@ -38,10 +38,16 @@ namespace BioGenom.API.Mappers
                     Items = report.PersonalizedSet.Items.Select(i => new PersonalizedItemResponse
                     {
                         Id = i.Id,
-                        Name = i.Name,
-                        Description = i.Description,
-                        ImageUrl = i.ImageUrl,
-                        AlternativesCount = i.AlternativesCount
+                        AlternativesCount = i.AlternativesCount,
+                        Product = i.Product != null
+                            ? new ProductResponse
+                            {
+                                Id = i.Product.Id,
+                                Name = i.Product.Name,
+                                Description = i.Product.Description,
+                                ImageUrl = i.Product.ImageUrl
+                            }
+                            : null
                     }).ToList()
                 };
             }
@@ -59,9 +65,7 @@ namespace BioGenom.API.Mappers
                 {
                     Items = request.PersonalizedSet.Items.Select(i => new PersonalizedItem
                     {
-                        Name = i.Name,
-                        Description = i.Description,
-                        ImageUrl = i.ImageUrl,
+                        ProductId = i.ProductId,
                         AlternativesCount = i.AlternativesCount
                     }).ToList()
                 };

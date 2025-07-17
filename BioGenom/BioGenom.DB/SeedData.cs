@@ -10,22 +10,34 @@ namespace BioGenom.DB
             if (await context.Reports.AnyAsync())
                 return;
 
+            var product1 = new Product
+            {
+                Id = Guid.NewGuid(),
+                Name = "Product 1",
+                Description = "Description for product 1",
+                ImageUrl = "https://example.com/image1.png"
+            };
+
+            var product2 = new Product
+            {
+                Id = Guid.NewGuid(),
+                Name = "Product 2",
+                Description = "Description for product 2",
+                ImageUrl = "https://example.com/image2.png"
+            };
+
             var personalizedSet = new PersonalizedSet
             {
                 Items = new List<PersonalizedItem>
             {
                 new PersonalizedItem
                 {
-                    Name = "Item 1",
-                    Description = "Description for item 1",
-                    ImageUrl = "https://example.com/image1.png",
+                    Product = product1,
                     AlternativesCount = 2
                 },
                 new PersonalizedItem
                 {
-                    Name = "Item 2",
-                    Description = "Description for item 2",
-                    ImageUrl = "https://example.com/image2.png",
+                    Product = product2,
                     AlternativesCount = 1
                 }
             }

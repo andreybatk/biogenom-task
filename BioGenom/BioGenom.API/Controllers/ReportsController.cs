@@ -10,10 +10,12 @@ namespace BioGenom.API.Controllers
     public class ReportsController : ControllerBase
     {
         private readonly IReportRepository _reportRepository;
+        private readonly IProductRepository _productRepository;
 
-        public ReportsController(IReportRepository repository)
+        public ReportsController(IReportRepository reportRepository, IProductRepository productRepository)
         {
-            _reportRepository = repository;
+            _reportRepository = reportRepository;
+            _productRepository = productRepository;
         }
 
         [HttpGet]
@@ -36,6 +38,28 @@ namespace BioGenom.API.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var invalidItems = new List<string>(); //TODO: перенести в сервис
+
+            if (request.PersonalizedSet?.Items.Count > 0)
+            {
+                var validationTasks = request.PersonalizedSet.Items.Select(async item =>
+                {
+                    var exists = await _productRepository.ExistsAsync(item.ProductId);
+                    if (!exists)
+                        return $"ProductId {item.ProductId} не найден в базе";
+
+                    return null;
+                });
+
+                var results = await Task.WhenAll(validationTasks);
+                invalidItems.AddRange(results.Where(msg => msg != null)!);
+            }
+
+            if (invalidItems.Count > 0)
+            {
+                return BadRequest(invalidItems);
+            }
 
             var report = ReportMapper.ToEntity(request);
             await _reportRepository.SaveReportAsync(report);

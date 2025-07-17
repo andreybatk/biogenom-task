@@ -14,10 +14,12 @@ namespace BioGenom.API
                 "DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-            builder.Services.AddScoped<IReportRepository, ReportRepository>();
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddScoped<IReportRepository, ReportRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())

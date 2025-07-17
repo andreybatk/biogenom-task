@@ -12,6 +12,7 @@ namespace BioGenom.DB
         public DbSet<NewDailyIntake> NewDailyIntakes { get; set; }
         public DbSet<PersonalizedSet> PersonalizedSets { get; set; }
         public DbSet<PersonalizedItem> PersonalizedItems { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +39,12 @@ namespace BioGenom.DB
                 .WithOne(i => i.PersonalizedSet)
                 .HasForeignKey(i => i.PersonalizedSetId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PersonalizedItem>()
+                .HasOne(pi => pi.Product)
+                .WithMany()
+                .HasForeignKey(pi => pi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
